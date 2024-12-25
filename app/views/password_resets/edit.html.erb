@@ -1,0 +1,17 @@
+<h1>Reset your password</h1>
+
+<%= form_with scope: :password_reset, url: password_reset_path, method: :patch do |f| %>
+  <%= hidden_field_tag :password_reset_token, params[:password_reset_token] %>
+
+  <div>
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+  </div>
+
+  <div>
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
+  </div>
+
+  <%= f.submit "Reset password" %>
+<% end %>

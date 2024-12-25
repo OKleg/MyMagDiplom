@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DiplomApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><%= link_to "Home", root_path %></li>
+          <li><%= link_to "Dashboard", dashboard_path %></li>
+          <% if Current.user%>
+            <li><%= button_to "Sign out", session_path, method: :delete %></li>
+           <li><%= link_to "Edit password", edit_password_path %></li>
+            <%# <li><%= link_to "Rooms", rooms_path %></li> %>
+
+          <%else%>
+            <li><%= link_to "Sign in", new_session_path %></li>
+            <li><%= link_to "Sign up", new_registration_path %></li>
+          <%end%>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <%= notice %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

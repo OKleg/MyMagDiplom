@@ -1,0 +1,12 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+DEFAULTS: &DEFAULTS
+  password_digest: <%= BCrypt::Password.create("password") %>
+
+alex:
+  email: alex@doe.com
+  <<: *DEFAULTS
+
+jeanne:
+  email: jeanne@doe.com
+  <<: *DEFAULTS
