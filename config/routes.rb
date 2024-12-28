@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  #resources :rooms
+  resources :rooms
   get 'password/resets'
   root 'pages#home'
   resource :dashboard, only: :show
