@@ -14,14 +14,16 @@
     <header>
       <nav>
         <ul>
-          <% if Current.user%>
           <li><%= link_to "Home", root_path %></li>
+          <% if Current.user%>
+            <% puts Current.user%>
             <li><%= link_to "Dashboard", dashboard_path %></li>
             <li><%= link_to "Rooms", rooms_path%></li> 
             <li><%= link_to "Edit password", edit_password_path %></li>
             <li><%= button_to "Sign out", session_path, method: :delete %></li>
-
           <%else%>
+           <% puts Current.user%>
+           <% puts "Current USER is NOT Found"%>
             <li><%= link_to "Sign in", new_session_path %></li>
             <li><%= link_to "Sign up", new_registration_path %></li>
           <%end%>

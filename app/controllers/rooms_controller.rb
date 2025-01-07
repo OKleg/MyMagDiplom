@@ -1,5 +1,5 @@
 class RoomsController < ApplicationController
-  #before_action :require_authentication!
+  before_action :require_authentication
 
   def index
     # @rooms= Room.public_rooms

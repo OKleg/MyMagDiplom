@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
-  #scope :all_except, -> (user) {where.not(id: user)}
+  scope :all_except, -> (user) {where.not(id: user)}
   MINIMUM_PASSWORD_LENGTH = 4
 
   has_secure_password

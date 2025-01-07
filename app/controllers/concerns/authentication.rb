@@ -22,7 +22,7 @@ module Authentication
 
   def sign_in(user)
     session = user.sessions.create!
-
+    restore_authentication
     cookies.signed.permanent[:session_id] = { value: session.id, httponly: true }
   end
 
