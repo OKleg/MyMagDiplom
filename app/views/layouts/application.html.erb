@@ -8,27 +8,14 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </head>
 
   <body>
     <header>
-      <nav>
-        <ul>
-          <li><%= link_to "Home", root_path %></li>
-          <% if Current.user%>
-            <% puts Current.user%>
-            <li><%= link_to "Dashboard", dashboard_path %></li>
-            <li><%= link_to "Rooms", rooms_path%></li> 
-            <li><%= link_to "Edit password", edit_password_path %></li>
-            <li><%= button_to "Sign out", session_path, method: :delete %></li>
-          <%else%>
-           <% puts Current.user%>
-           <% puts "Current USER is NOT Found"%>
-            <li><%= link_to "Sign in", new_session_path %></li>
-            <li><%= link_to "Sign up", new_registration_path %></li>
-          <%end%>
-        </ul>
-      </nav>
+      <%= render "layouts/navbar"%>
+     
     </header>
     <main>
       <%= notice %>
