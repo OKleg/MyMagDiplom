@@ -14,9 +14,14 @@
  *= require_self
  */
  body {
+    overflow: hidden;
     margin: 0;
   }
-  
+  #single_room{
+    height: calc(100vh-150px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
   header {
     border-bottom: 1px solid gray;
     padding: 0.5rem 1rem;
@@ -31,4 +36,23 @@
   
   main {
     padding: 0.5rem 1rem;
+  }
+
+  #room_container{
+    height: 100vh;
+    margin-right: 0px !important;
+  }
+  #side_panel{
+    height: 100vh;
+    margin-right: 0px !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin-bottom: 55px;
+  }
+  #chatroom_container{
+    height: 100vh;
+    overflow-x: hidden;
+    margin-right: 0px !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }

@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   scope :all_except, -> (user) {where.not(id: user)}
-
+  after_create_commit {broadcast_append_to 'users'}
   MINIMUM_PASSWORD_LENGTH = 4
 
   has_secure_password
