@@ -16,13 +16,7 @@
     <div id="room_container" class="col-md-8 col-sm-8 bg-dark text-light" >
         <%if @single_room%>
             <h4 class="text-center"><%= @single_room.name%></h4>
-            <%= content_tag :div,
-            class: "collaborative-editor",
-            data: {
-                documentId: @single_room.id,
-                content: @single_room.content,
-                version: @single_room.version
-            }.to_json do %><% end %>
-        <%end%>
+
+        <%end %>
     </div>
 </div>
