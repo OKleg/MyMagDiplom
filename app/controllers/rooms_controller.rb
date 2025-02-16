@@ -2,6 +2,7 @@ class RoomsController < ApplicationController
   before_action :require_authentication
 
   def index
+    @single_room = Room.take
     @rooms = Room.new
     @rooms= Room.public_rooms
     @users = User.all_except(Current.user)

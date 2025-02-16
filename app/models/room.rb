@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  has_rich_text :content
+  # has_rich_text :content
 
   validates_uniqueness_of :name
   scope :public_rooms, -> {where(is_private: false)}
