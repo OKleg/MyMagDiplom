@@ -5,6 +5,7 @@ import consumer from "channels/consumer";
 export default class extends Controller {
   static targets = ["body"];
 
+  version = -1;
   connect() {
     console.log(
       "Will create a subscrition for channel 'OperationsChannel', room_id: %s",
@@ -48,6 +49,7 @@ export default class extends Controller {
       this.updateText(data);
     }
     if (data.status === "connect_user") {
+      this.version = data.version;
       this.updateText(data);
       console.log(`${data.user} connect to room ${this.data.get("roomid")}`);
     }
@@ -55,13 +57,14 @@ export default class extends Controller {
 
   updateText(data) {
     // Обновляем текст в редакторе
-
-    var position = this.bodyTarget.editor.getPosition();
+    if (this.bodyTarget.editor.getPosition()) {
+      var position = this.bodyTarget.editor.getPosition();
+      this.bodyTarget.editor.setPosition(position);
+    }
     if (data.conetnt != "" || data.conetnt != "null") {
       console.log(`UpdateText`);
       this.bodyTarget.innerHTML = data.content;
     }
-    this.bodyTarget.editor.setPosition(position);
   }
 
   sendUpdate(event) {
@@ -74,10 +77,12 @@ export default class extends Controller {
     );
     this.subscription.send({
       status: "update_text",
-      inputType: event.inputType,
-      dataTransfer: event.dataTransfer,
-      conent: event.data,
-      position: this.bodyTarget.editor.getPosition(),
+      operation: {
+        type: event.inputType,
+        text: event.data,
+        position: this.bodyTarget.editor.getPosition(),
+        version: this.data.get("version"),
+      },
       user: this.data.get("user"),
     });
   }

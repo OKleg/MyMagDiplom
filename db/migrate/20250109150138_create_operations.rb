@@ -1,14 +1,15 @@
 class CreateOperations < ActiveRecord::Migration[7.1]
   def change
     create_table :operations do |t|
-      t.references :document, foreign_key: true, null: false
-      t.string :kind, null: false
-      t.string :data, null: false
-      t.integer :version, null: false
+      t.references :room, foreign_key: true, null: false
+      t.string :type, null: false
+      t.text :text, null: false
+      t.integer :position, null: false
+      t.integer :version, null: false, default: 0
 
       t.timestamps
     end
-    add_index :operations, [:document_id, :version], unique: true
+    add_index :operations, [:room_id, :version], unique: true
 
   end
 end

@@ -15,7 +15,7 @@
     </div>
     <div id="room_container" class="col-md-8 col-sm-8 bg-dark text-light"  data-controller="operation" data-operation-user="<%=Current.user.email%>" data-operation-roomid="<%=@single_room.id%>">
         <%if @single_room%>
-            <h4 class="text-center" ><%=@single_room.name%></h4>
+            <h4 class="text-center" data-operation-version="<%=@single_room.version%>" ><%=@single_room.name%></h4>
             <div style="background-color: gray;">
                 <trix-editor id="trix-editor-1" data-action="input->operation#sendUpdate" data-operation-target="body" ></trix-editor>
             </div>
