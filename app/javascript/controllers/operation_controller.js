@@ -57,10 +57,7 @@ export default class extends Controller {
 
   updateText(data) {
     // Обновляем текст в редакторе
-    if (this.bodyTarget.editor.getPosition()) {
-      var position = this.bodyTarget.editor.getPosition();
-      this.bodyTarget.editor.setPosition(position);
-    }
+    //this.bodyTarget.editor.setPosition(position);
     if (data.conetnt != "" || data.conetnt != "null") {
       console.log(`UpdateText`);
       this.bodyTarget.innerHTML = data.content;
@@ -75,7 +72,7 @@ export default class extends Controller {
         event.data
       } position:${this.bodyTarget.editor.getPosition()}`
     );
-    this.subscription.send({
+    var operation_for_send = {
       status: "update_text",
       operation: {
         type: event.inputType,
@@ -84,6 +81,7 @@ export default class extends Controller {
         version: this.data.get("version"),
       },
       user: this.data.get("user"),
-    });
+    };
+    this.subscription.send(operation_for_send);
   }
 }

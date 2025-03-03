@@ -1,4 +1,4 @@
-<div id="chatroom_container" class="row bg-dark text-light">
+<div id="rooms_container" class="row bg-dark text-light">
     <div id="side_panel" class="col-md-4 col-sm-4">
         <h5>  <%= Current.user.email%> </h5>
         <h4>Users</h4>
@@ -6,19 +6,14 @@
         <div id="users">
             <%=render @users%>
         </div>
+       <h4>Create Room</h4>
+        <%= render 'layouts/new_room_form' %>  
+    </div>
+    <div class="col-md-8 col-sm-8 bg-dark text-light">
         <h4>Rooms</h4>
         <%=turbo_stream_from "rooms"%>
         <div id="rooms">
             <%=render @rooms%>
         </div>
-        <%= render 'layouts/new_room_form' %>  
-    </div>
-    <div id="room_container" class="col-md-8 col-sm-8 bg-dark text-light"  data-controller="operation" data-operation-user="<%=Current.user.email%>" data-operation-roomid="<%=@single_room.id%>">
-        <%if @single_room%>
-            <h4 class="text-center" data-operation-version="<%=@single_room.version%>" ><%=@single_room.name%></h4>
-            <div style="background-color: gray;">
-                <trix-editor id="trix-editor-1" data-action="input->operation#sendUpdate" data-operation-target="body" ></trix-editor>
-            </div>
-        <%end %>
     </div>
 </div>

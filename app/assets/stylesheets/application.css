@@ -49,7 +49,7 @@
     overflow-y: scroll;
     margin-bottom: 55px;
   }
-  #chatroom_container{
+  #rooms_container{
     height: 100vh;
     overflow-x: hidden;
     margin-right: 0px !important;
