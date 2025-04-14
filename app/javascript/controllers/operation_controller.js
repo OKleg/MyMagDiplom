@@ -5,16 +5,21 @@ import consumer from "channels/consumer";
 export default class extends Controller {
   static targets = ["body"];
 
-  version = -1;
   connect() {
     console.log(
       "Will create a subscrition for channel 'OperationsChannel', room_id: %s",
       this.data.get("roomid")
     );
+    this.isAck = true;
+    this.version = 0;
+    this.operations = [];
+    this.room = { id: this.data.get("roomid") };
+    this.user = { id: this.data.get("userid") };
     this.subscription = consumer.subscriptions.create(
       {
         channel: "OperationsChannel",
-        id: this.data.get("roomid"),
+        room_id: this.room.id,
+        user_id: this.user.id,
       },
       {
         connected: this._connected.bind(this),
@@ -27,11 +32,8 @@ export default class extends Controller {
   }
   _connected() {
     console.log("OperationsChannel connected");
-    this.subscription.send({
-      status: "connect_user",
-      content: this.bodyTarget.value,
-      user: this.data.get("user"),
-    });
+    this.subscription.send({ status: "connect_user" });
+
     // Called when the subscription is ready for use on the server
   }
 
@@ -42,46 +44,122 @@ export default class extends Controller {
 
   _received(data) {
     // Called when there's incoming data on the websocket for this channel
-    if (data.status === "update_text" && data.user != this.data.get("user")) {
+    if (data.status === "update_text") {
       console.log(
-        `OperationsChannel resived: ${data.content} from ${data.user}`
+        `OperationsChannel resived operation:
+         ${JSON.stringify(data.operation)}`
       );
-      this.updateText(data);
+      this.version = data.operation.version;
+      if (data.operation.user_id == this.user.id) {
+        console.log("acknowlage");
+        this.isAck = true;
+
+        // this.updateText(data);
+        if (this.operations.length != 0) {
+          this.sendOperation();
+        }
+        console.log(`ACK version:${this.version}`);
+      } else {
+        this.updateText(data.operation);
+      }
     }
     if (data.status === "connect_user") {
-      this.version = data.version;
-      this.updateText(data);
-      console.log(`${data.user} connect to room ${this.data.get("roomid")}`);
+      console.log(`${data.user.email} connect to room ${this.room.id}`);
+      if (data.user.id == this.user.id) {
+        this.version = data.version;
+        this.loadText(data.content);
+      }
     }
   }
 
-  updateText(data) {
-    // Обновляем текст в редакторе
-    //this.bodyTarget.editor.setPosition(position);
-    if (data.conetnt != "" || data.conetnt != "null") {
-      console.log(`UpdateText`);
-      this.bodyTarget.innerHTML = data.content;
+  loadText(content) {
+    if (content) {
+      // this.bodyTarget.innerHTML = content;
+      this.bodyTarget.editor.loadHTML(content);
     }
   }
 
-  sendUpdate(event) {
-    console.log(`sendUpdate ${event.data}`);
-    // Отправляем изменения на сервер
-    console.log(
-      `send_content: ${
-        event.data
-      } position:${this.bodyTarget.editor.getPosition()}`
-    );
-    var operation_for_send = {
-      status: "update_text",
-      operation: {
-        type: event.inputType,
-        text: event.data,
-        position: this.bodyTarget.editor.getPosition(),
-        version: this.data.get("version"),
-      },
-      user: this.data.get("user"),
+  // Обновляем текст в редакторе
+  updateText(operation) {
+    console.log(`UpdateText`);
+    const document = this.bodyTarget.editor.getDocument();
+    // Получаем текущее содержимое
+    let currentContent = document.toString();
+    let newContent = currentContent;
+
+    if (operation.input_type == "insertText") {
+      // Вставляем текст в указанную позицию
+      console.log(
+        `pos: ${operation.position} - ${currentContent[operation.position]}`
+      );
+      newContent = this.insertTextInContent(
+        currentContent,
+        operation.text,
+        operation.position
+      );
+    } else if (
+      operation.input_type == "deleteContentBackward" ||
+      operation.input_type == "deleteContentForward" ||
+      operation.input_type == "delete"
+    ) {
+      newContent = this.deleteTextFromPosition(
+        currentContent,
+        operation.position
+      );
+    }
+    this.bodyTarget.editor.loadHTML(newContent);
+    console.log(`newContent |${newContent}|`);
+    console.log(`text|${this.bodyTarget.value}|`);
+  }
+
+  onInput(event) {
+    var inputText = event.data;
+    var position = this.bodyTarget.editor.getPosition();
+    if (inputText == null) {
+      inputText = "";
+    }
+    console.log(`operation = {
+      type: ${event.inputType}
+      text: "${inputText}"
+      position:${position}
+      version: ${this.version} }`);
+    var operation = {
+      type: event.inputType,
+      text: inputText,
+      position: position,
+      version: this.version,
     };
-    this.subscription.send(operation_for_send);
+    this.operations.unshift(operation);
+    if (this.isAck) {
+      this.sendOperation();
+      this.isAck = false;
+    }
+  }
+  sendOperation() {
+    if (this.operations.length != 0) {
+      var operation = this.operations.pop();
+      var operation_for_send = {
+        status: "update_text",
+        operations: [operation],
+        room_id: this.room.id,
+        user_id: this.user.id,
+      };
+      this.subscription.send(operation_for_send);
+    }
+  }
+
+  insertTextInContent(currentContent, text, position) {
+    let newContent =
+      currentContent.slice(0, position - 1) +
+      text +
+      currentContent.slice(position - 1);
+    return newContent;
+  }
+
+  deleteTextFromPosition(currentContent, position) {
+    let newContent =
+      currentContent.slice(0, position) + currentContent.slice(position + 1);
+
+    return newContent;
   }
 }

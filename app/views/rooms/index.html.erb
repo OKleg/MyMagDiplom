@@ -1,6 +1,6 @@
 <div id="rooms_container" class="row bg-dark text-light">
     <div id="side_panel" class="col-md-4 col-sm-4">
-        <h5>  <%= Current.user.email%> </h5>
+        <h5> <%= Current.user.email%> </h5>
         <h4>Users</h4>
         <%=turbo_stream_from "users"%>
         <div id="users">

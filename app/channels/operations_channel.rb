@@ -1,45 +1,45 @@
 class OperationsChannel < ApplicationCable::Channel
   def subscribed
-    Rails.logger.info "Subscribed to room #{params[:id]}"
-     stream_from "operation_channel_#{params[:id]}"
+    Rails.logger.info "Subscribed to room #{params[:room_id]}"
+
+    stream_from "operation_channel_#{params[:room_id]}"
+
   end
 
   def receive(data)
     # Принимаем изменения от клиента и транслируем их всем подписчикам
     Rails.logger.info "RESIVE data: #{data}"
-    room = Room.find(params[:id])
-    new_data = {status: data["status"], user: data["user"], version: room.version}
-
     if data["status"] == "update_text"
-      operation = data["operation"]
-      new_operation = Operation.new(
-        type: operation["type"],
-        text: operation["text"],
-        position: operation["position"],
-        version: operation["version"]
-      )
-      transformed_operation = new_operation.transform(room)
-      Operation::RoomEditorService.call(room, transformed_operation)
-      if new_version
-        ActionCable.server.broadcast("operation_channel_#{params[:id]}", new_data)
-      end
-      # operation = operation_transformation(room, data["operation"])
-      # modified_content = update_text(room.content, operation)
-      # room.update(content: modified_content)
+      TransformationJob.perform_later(data: data)
     elsif data["status"] == "connect_user"
-      Rails.logger.info "User #{data["user"]} connected to room_#{params[:id]} "
-      ActionCable.server.broadcast("operation_channel_#{params[:id]}", new_data)
+      connect_user
     end
-    new_data["content"] = room.content
-    # ActionCable.server.broadcast("operation_channel_#{params[:id]}", new_data)
+    # ActionCable.server.broadcast("operation_channel_#{params[:room_id]}", new_data)
   end
 
   def unsubscribed
-    Rails.logger.info "Unsubscribed from room #{params[:id]}"
+    Rails.logger.info "Unsubscribed from room #{params[:room_id]}"
     # Any cleanup needed when channel is unsubscribed
   end
 
   private
+
+  def connect_user
+    room_id = params[:room_id]
+    room = Room.find(room_id)
+    user = User.find(params[:user_id])
+      connect_data = {
+        status: "connect_user",
+        content: room.content,
+        user: { id: user.id, email: user.email },
+        version: room.version,
+      }
+      Rails.logger.info "User #{user.email} connected to room_#{room_id} "
+      ActionCable.server.broadcast("operation_channel_#{room_id}", connect_data)
+  end
+  # def room_id_params
+  #   params.require(:room_id)
+  # end
 
   # def update_text(content, operation)
   #   modified_content = content
@@ -53,8 +53,5 @@ class OperationsChannel < ApplicationCable::Channel
   #   content
   # end
 
-  # def operation_transformation(room,operation)
-
-  # end
 
 end

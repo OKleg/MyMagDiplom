@@ -1,40 +1,32 @@
 class Operation < ApplicationRecord
-  # after_create :transform
-  belongs_to :document_version
+  belongs_to :room
+  belongs_to :user
+  # after_commit :broadcast_operation
 
-  private
-
-  def transform(room)
-    Rails.logger.info "Operation transform #{self}"
-    Rails.logger.info "Operation transform room #{document_version.room.name}"
-    # theirs = Operation.where(version >= :version)
-    # right, bottom = TransformationService.call(theirs, self)
-
-    # room = document_version.room
-
-    # Получаем последнюю версию документа
-    current_version = room.document_versions.last
-
+  def transform(transform_service: Operations::TransformationService, content_edit_service: Operations::ContentEditorService)
+    Rails.logger.info "Operation transform #{self.to_s}"
+    # Получаем операции до последней версии документа
+    #       "user_id <> :current_user_id AND version BETWEEN  :operation_version AND :current_version", {
+    current_version_operations = Operation.where(
+      "room_id = :current_room AND version > :operation_version", {
+        current_room:  self.room_id,
+      current_user_id: self.user_id,
+        operation_version: self.version.to_s}
+      ).order(version: :desc)
     # Трансформируем новую операцию относительно всех операций в текущей версии
-    transformed_operation = Operation::TransformationService.call(
-      new_operation: self,
-      current_version_operations: current_version.operations
+    Rails.logger.info "transform_service.call"
+    transformed_operation = transform_service.call(
+       self,
+       current_version_operations.to_a
     )
-
+    # Если операция успешно трансформирована, сохраняем и применяем её
     if transformed_operation
-      # Создаем новую версию документа
-      new_version = room.document_versions.create!(
-        version_number: current_version.version_number + 1
-      )
-       # Сохраняем операцию
-       new_version.operations.create!(
-        type: transformed_operation.type,
-        position: transformed_operation.position,
-        text: transformed_operation.text,
-        version: transformed_operation.version
-      )
+      Rails.logger.info "transformed_operation: #{transformed_operation.inspect}"
+      transformed_operation.version = self.room.version+1
+      if transformed_operation.save!
+        content_edit_service.call(self.room, transformed_operation)
+        ActionCable.server.broadcast("operation_channel_#{self.room.id}",{status: "update_text", operation: self})
+      end
     end
-    transformed_operation
   end
-
 end

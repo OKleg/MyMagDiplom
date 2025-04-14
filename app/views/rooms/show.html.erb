@@ -2,7 +2,7 @@
     <%if @single_room%>
         <div id="room_container" class=" bg-dark text-light"  
         data-controller="operation" 
-        data-operation-user="<%=Current.user.email%>" 
+        data-operation-userid="<%=Current.user.id%>" 
         data-operation-version="<%=@single_room.version%>" 
         data-operation-roomid="<%=@single_room.id%>"
         >
@@ -10,7 +10,7 @@
                 <%=@single_room.name%>
             </h4>
             <div style="background-color: gray;">
-                <trix-editor id="trix-editor-1" data-action="input->operation#sendUpdate" data-operation-target="body" ></trix-editor>
+                <trix-editor id="trix-editor-1" data-action="input->operation#onInput" data-operation-target="body" ></trix-editor>
             </div>
         </div>
     <%end %>
