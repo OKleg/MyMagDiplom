@@ -11,14 +11,14 @@ module Operations
     def call #current_version_operations
       # Трансформируем новую операцию относительно всех операций в текущей версии
       @current_version_operations.each do |existing_operation|
-        @operation = transform_a(other: existing_operation)
+        @operation = transformation(other: existing_operation)
         break if @operation.nil? # Конфликт
       end
       @operation
     end
 
     # Трансформация текущей операции относительно другой операции
-    def transform_a(other:)
+    def transformation(other:)
       if @operation.input_type == "deleteContentBackward" || @operation.input_type == "deleteContentForward"
         @operation.input_type = "delete"
         @operation.text=""
@@ -26,7 +26,8 @@ module Operations
       Rails.logger.info "transform_a operation: #{@operation.inspect}"
 
       # insertText deleteContentBackward deleteContentForward
-      if @operation.position < other.position ||  @operation.position == other.position && win_operation(@operation, other)
+      # Если операция применяется на позиции перед другими, то она не меняется
+      if @operation.position < other.position # ||  @operation.position == other.position && win_operation(@operation, other)
        return @operation
       end
       if other.input_type == "deleteContentBackward" || other.input_type == "deleteContentForward"
@@ -36,15 +37,15 @@ module Operations
       case [@operation.input_type, other.input_type]
       when ['insertText', 'insertText']
         @operation.position =  @operation.position + other.text.length
-      when ['insertText', 'delete']
+      when ['insertText', 'delete'] #!!!!!!!!!
         @operation.position =  @operation.position - 1
       when ['delete', 'insertText']
         @operation.position =  @operation.position + other.text.length
       when ['delete', 'delete']
-        if @operation.position > other.position + 1 #other.text.length
-          @operation.position =  @operation.position - other.text.length
+        if @operation.position > other.position #other.text.length
+          @operation.position =  @operation.position - 1
         else
-          nil
+          return nil
         end
       end
       @operation
@@ -52,9 +53,10 @@ module Operations
 
     private
 
-    def win_operation(our_op,other_op)
-      our_op.user_id < other_op.user_id
-    end
+    # def win_operation(our_op,other_op)
+    #   our_op.user_id < other_op.user_id
+    # end
+
     # def initialize(others:, ours: )
     #   @left = others
     #   @top = ours

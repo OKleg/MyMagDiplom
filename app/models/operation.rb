@@ -7,12 +7,7 @@ class Operation < ApplicationRecord
     Rails.logger.info "Operation transform #{self.to_s}"
     # Получаем операции до последней версии документа
     #       "user_id <> :current_user_id AND version BETWEEN  :operation_version AND :current_version", {
-    current_version_operations = Operation.where(
-      "room_id = :current_room AND version > :operation_version", {
-        current_room:  self.room_id,
-      current_user_id: self.user_id,
-        operation_version: self.version.to_s}
-      ).order(version: :desc)
+    current_version_operations = self.operations_to_current_version
     # Трансформируем новую операцию относительно всех операций в текущей версии
     Rails.logger.info "transform_service.call"
     transformed_operation = transform_service.call(
@@ -28,5 +23,14 @@ class Operation < ApplicationRecord
         ActionCable.server.broadcast("operation_channel_#{self.room.id}",{status: "update_text", operation: self})
       end
     end
+  end
+
+  def operations_to_current_version
+    Operation.where(
+      "room_id = :current_room AND version > :operation_version", {
+        current_room:  self.room_id,
+      current_user_id: self.user_id,
+        operation_version: self.version.to_s}
+      ).order(version: :desc)
   end
 end
