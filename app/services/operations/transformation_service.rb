@@ -38,7 +38,9 @@ module Operations
       when ['insertText', 'insertText']
         @operation.position =  @operation.position + other.text.length
       when ['insertText', 'delete'] #!!!!!!!!!
-        @operation.position =  @operation.position - 1
+        if @operation.position > other.position
+          @operation.position = @operation.position - 1
+        end
       when ['delete', 'insertText']
         @operation.position =  @operation.position + other.text.length
       when ['delete', 'delete']

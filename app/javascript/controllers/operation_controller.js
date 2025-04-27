@@ -53,11 +53,7 @@ export default class extends Controller {
       if (data.operation.user_id == this.user.id) {
         console.log("acknowlage");
         this.isAck = true;
-
-        // this.updateText(data);
-        if (this.operations.length != 0) {
-          this.sendOperation();
-        }
+        this.sendOperation();
         console.log(`ACK version:${this.version}`);
       } else {
         this.updateText(data.operation);
@@ -90,7 +86,9 @@ export default class extends Controller {
     if (operation.input_type == "insertText") {
       // Вставляем текст в указанную позицию
       console.log(
-        `pos: ${operation.position} - ${currentContent[operation.position]}`
+        `insertText in position: op(${operation.position}) - txt(${
+          currentContent[operation.position]
+        }`
       );
       newContent = this.insertTextInContent(
         currentContent,
@@ -107,14 +105,17 @@ export default class extends Controller {
         operation.position
       );
     }
-    this.bodyTarget.editor.loadHTML(newContent);
+    this.bodyTarget.editor.loadHTML(newContent); //loadText
     console.log(`newContent |${newContent}|`);
     console.log(`text|${this.bodyTarget.value}|`);
   }
 
   onInput(event) {
     var inputText = event.data;
-    var position = this.bodyTarget.editor.getPosition();
+    position = this.bodyTarget.editor.getPosition();
+    if (event.inputType == "insertText") {
+      var position = position - 1;
+    }
     if (inputText == null) {
       inputText = "";
     }
@@ -150,9 +151,7 @@ export default class extends Controller {
 
   insertTextInContent(currentContent, text, position) {
     let newContent =
-      currentContent.slice(0, position - 1) +
-      text +
-      currentContent.slice(position - 1);
+      currentContent.slice(0, position) + text + currentContent.slice(position);
     return newContent;
   }
 

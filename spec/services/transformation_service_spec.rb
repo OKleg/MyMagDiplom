@@ -6,9 +6,9 @@ describe Operations::TransformationService do
   describe "#transformation" do
     it "calls transformation with insert operation after insert in equal position" do
       # Допустим текст "" (v1)
-      #Первый пользователь вставил "a" в позицию 1(0): "a" (v1)
+      #Первый пользователь вставил "a" в позицию 0(1): "a" (v1)
       previous_op = [
-        Operation.new( input_type: "insertText", text: "a", position: 1, version: 2)
+        Operation.new( input_type: "insertText", text: "a", position: 0, version: 2)
       ]
       #Второй пользователь вставляет символ в позицию 1(0): "t" (v0->v1)
       current_op = Operation.new(  input_type: "insertText",
@@ -28,12 +28,12 @@ describe Operations::TransformationService do
       ]
       #Второй пользователь вставляет "d" в позицию 1(2): "adr (v2->v3)
       current_op = Operation.new(  input_type: "insertText",
-      text: "d", position: 2, version: 2)
+      text: "d", position: 1, version: 2)
 
       transformed_operation = described_class.call(current_op, previous_op)
       # Ожидается, что у второго пользователя
-      # позиция операции станет: 0(1) "dr" (v4)
-      expect(transformed_operation[:position]).to eq(1)
+      # позиция операции станет: 0 "dr" (v4)
+      expect(transformed_operation[:position]).to eq(0)
       #Да, выглядит как бред, но так получилось,
       # потому что позиция берется после вставки...
     end
@@ -43,7 +43,7 @@ describe Operations::TransformationService do
       #Первый пользователь вставил "a" в позицию 0: "adr" (v3)
       prev_insert_text = "a"
       previous_op = [
-        Operation.new( input_type: "insertText", text: prev_insert_text, position: 1, version: 3)
+        Operation.new( input_type: "insertText", text: prev_insert_text, position: 0, version: 3)
       ]
       #Второй пользователь удаляет символ из позиции 1 "d" (v2->v3)
       delete_position = 1
@@ -72,39 +72,39 @@ describe Operations::TransformationService do
 
     it "calls transformation with insert operation after insert" do
       # Допустим текст "r" (v1)
-      #Первый пользователь вставил "a" в позицию 1(0): "a" (v1)
+      #Первый пользователь вставил "a" в позицию 0: "a" (v1)
       previous_op = [
-        Operation.new( input_type: "insertText", text: "a", position: 1, version: 2)
+        Operation.new( input_type: "insertText", text: "a", position: 0, version: 2)
       ]
-      #Второй пользователь вставляет символ в позицию 2(1): "t" (v2->v3)
+      #Второй пользователь вставляет символ в позицию 1: "t" (v2->v3)
       current_op = Operation.new(  input_type: "insertText",
-      text: "t", position: 2, version: 1)
+      text: "t", position: 1, version: 1)
       transformed_operation = described_class.call(current_op, previous_op)
        # Ожидается, что у второго пользователя
-      # позиция операции станет: 3(2) "art" (v4)
-      expect(transformed_operation[:position]).to eq(3)
+      # позиция операции станет: 2 "art" (v4)
+      expect(transformed_operation[:position]).to eq(2)
     end
 
     it "calls transformation with insert operation before insert" do
       # Допустим текст "r" (v1)
-      #Первый пользователь вставил "t" в позицию 2(1): "a" (v1)
+      #Первый пользователь вставил "t" в позицию 2: "a" (v1)
       previous_op = [
         Operation.new( input_type: "insertText", text: "t", position: 2, version: 2)
       ]
-      #Второй пользователь вставляет символ 'a' в позицию 1(0): "a" (v2->v3)
+      #Второй пользователь вставляет символ 'a' в позицию 0: "a" (v2->v3)
       current_op = Operation.new(  input_type: "insertText",
-      text: "a", position: 1, version: 1)
+      text: "a", position: 0, version: 1)
       transformed_operation = described_class.call(current_op, previous_op)
        # Ожидается, что у второго пользователя
-      # позиция операции остается: 1(0) "art" (v4)
-      expect(transformed_operation[:position]).to eq(1)
+      # позиция операции остается: 0 "art" (v4)
+      expect(transformed_operation[:position]).to eq(0)
     end
 
     it "calls transformation with delete operation before insert" do
       # Допустим текст "fa" (v1)
-      #Первый пользователь вставил "t" в позицию 3(2): "fat" (v1)
+      #Первый пользователь вставил "t" в позицию 2: "fat" (v1)
       previous_op = [
-        Operation.new( input_type: "insertText", text: "t", position: 3, version: 2)
+        Operation.new( input_type: "insertText", text: "t", position: 2, version: 2)
       ]
       #Второй пользователь удалил символ 'f' в из позиции 0: "a" (v2->v3)
       current_op = Operation.new(  input_type: "delete",
@@ -123,7 +123,7 @@ describe Operations::TransformationService do
       ]
       #Второй пользователь вставил символ 'g' в  позицию 0: "got" (v2->v3)
       current_op = Operation.new(  input_type: "insertText",
-      text: "g", position: 1, version: 1)
+      text: "g", position: 0, version: 1)
       transformed_operation = described_class.call(current_op, previous_op)
        # Ожидается, что у второго пользователя
       # позиция операции остается: 0 "go" (v4)
@@ -158,7 +158,7 @@ describe Operations::TransformationService do
       expect(transformed_operation).to be_nil
     end
 
-    it "calls transformation with insert and delete in equal position" do
+    it "calls transformation with insert after delete " do
       # Допустим текст "o" (v1)
       #Первый пользователь удалил "o" из позиции 0: "" (v1)
       previous_op = [
@@ -173,7 +173,7 @@ describe Operations::TransformationService do
       expect(transformed_operation[:position]).to eq(0)
     end
 
-    it "calls transformation with insert and delete in equal position" do
+    it "calls transformation with insert after delete in equal position" do
       # Допустим текст "art" (v1)
       #Первый пользователь удалил "r" из позиции 1: "at" (v1)
       previous_op = [
@@ -181,33 +181,33 @@ describe Operations::TransformationService do
       ]
       #Второй пользователь вставляет символ 'n' в позицию 1(2): "anrt" (v2->v3)
       current_op = Operation.new(  input_type: "insertText",
-      text: "n", position: 2, version: 1)
+      text: "n", position: 1, version: 1)
       transformed_operation = described_class.call(current_op, previous_op)
        # Ожидается, что у второго пользователя
-      # позиция операции будет: 0 "ant" (v4)
-      expect(transformed_operation[:position]).to eq(2)
+      # позиция операции будет: 1 "ant" (v4)
+      expect(transformed_operation[:position]).to eq(1)
     end
 
     it "calls transformation with delete and insert  in equal position" do
       # Допустим текст "got" (v1)
-      #Первый пользователь удалил "r" из позиции 1(2): "grot" (v1)
+      #Первый пользователь удалил "r" из позиции 1: "grot" (v1)
       previous_op = [
-        Operation.new( input_type: "insertText", text: "r", position: 2, version: 2)
+        Operation.new( input_type: "insertText", text: "r", position: 1, version: 2)
       ]
       #Второй пользователь удаляет символ 'o' из позиции 1: "gt" (v2->v3)
       current_op = Operation.new(  input_type: "delete",
       text: "", position: 1, version: 1)
       transformed_operation = described_class.call(current_op, previous_op)
        # Ожидается, что у второго пользователя
-      # позиция операции будет: 0 "grt" (v4)
+      # позиция операции будет: 2 "grt" (v4)
       expect(transformed_operation[:position]).to eq(2)
     end
 
     it "calls transformation with insert-delete in equal position" do
       # Допустим текст "grot" (v1)
-      #Первый пользователь вставил "a" из позиции 1(2): "garot" (v1)
+      #Первый пользователь вставил "a"  позиции 1: "garot" (v1)
       previous_op = [
-        Operation.new( input_type: "insertText", text: "a", position: 2, version: 2)
+        Operation.new( input_type: "insertText", text: "a", position: 1, version: 2)
       ]
       #Второй пользователь удаляет символ 'o' из позиции 2: "grt" (v2->v3)
       current_op = Operation.new(  input_type: "delete",
