@@ -28,8 +28,9 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
-
+/vendor/bundle
 /public/assets
-
+coverage 
+/public/coverage
 # Ignore master key for decrypting credentials and more.
 /config/master.key

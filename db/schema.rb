@@ -50,20 +50,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_09_154016) do
   end
 
   create_table "operations", force: :cascade do |t|
-    t.integer "document_id", null: false
-    t.string "kind", null: false
-    t.string "data", null: false
-    t.integer "version", null: false
+    t.integer "room_id", null: false
+    t.integer "user_id", null: false
+    t.string "input_type", null: false
+    t.text "text", default: "", null: false
+    t.integer "position", null: false
+    t.integer "version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["document_id", "version"], name: "index_operations_on_document_id_and_version", unique: true
-    t.index ["document_id"], name: "index_operations_on_document_id"
+    t.index ["room_id"], name: "index_operations_on_room_id"
+    t.index ["user_id"], name: "index_operations_on_user_id"
   end
 
   create_table "rooms", force: :cascade do |t|
     t.string "name"
-    t.boolean "is_private", default: false
     t.text "content", default: "", null: false
+    t.boolean "is_private", default: false
     t.integer "version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,6 +88,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_09_154016) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "operations", "documents"
+  add_foreign_key "operations", "rooms"
+  add_foreign_key "operations", "users"
   add_foreign_key "sessions", "users"
 end

@@ -13,9 +13,9 @@
  *= require_tree .
  *= require_self
  */
+ /* font-family: "Averia Libre"; */
  body {
-    overflow: hidden;
-    margin: 0;
+      margin: 0px;
   }
   #single_room{
     height: calc(100vh-150px);
@@ -23,24 +23,48 @@
     overflow-y: scroll;
   }
   header {
-    border-bottom: 1px solid gray;
-    padding: 0.5rem 1rem;
+    margin: 0px;
+    margin-top: 0.2rem;
+    border-bottom: 0.2rem solid darkolivegreen;
+    border-top: 0.15rem solid darkolivegreen;
   }
-  
-  header > nav > ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    padding: 0;
+  footer {
+    height: 2rem;
+    background-color: rgb(33, 37, 41);
   }
-  
-  main {
-    padding: 0.5rem 1rem;
-  }
+     /* class: "navbar-dark bg-dark" */
 
+  header > nav > a {
+    margin-left:  1rem ;
+    padding: 0.5rem;
+
+  }
+  header > nav > ul {
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    display:flex;
+    overflow-x:auto;
+
+    list-style: none;
+    height: 2.6rem;
+  }
+  header > nav > ul > li> form >  button {
+    
+    border: 0.15rem solid darkolivegreen;
+  }
+  main {
+    
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+  #page{
+    height: 35rem;
+  }
   #room_container{
-    height: 100vh;
-    margin-right: 0px !important;
+
+    height: 90%;
+    padding-left: 1.5rem;
   }
   #side_panel{
     height: 100vh;
@@ -49,10 +73,10 @@
     overflow-y: scroll;
     margin-bottom: 55px;
   }
-  #chatroom_container{
+  #rooms_container{
+    height: 90%;
+    margin-left: 0px !important;
     height: 100vh;
-    overflow-x: hidden;
     margin-right: 0px !important;
-    overflow-x: hidden;
     overflow-y: scroll;
   }

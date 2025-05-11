@@ -1,20 +1,22 @@
-<h1>Edit password</h1>
+<div id="page">
+  <h1>Edit password</h1>
 
-<%= form_with scope: :password, url: password_path, method: :patch do |f| %>
-  <div>
-    <%= f.label :password, "New password" %>
-    <%= f.password_field :password %>
-  </div>
+  <%= form_with scope: :password, url: password_path, method: :patch do |f| %>
+    <div>
+      <%= f.label :password, "New password" %>
+      <%= f.password_field :password %>
+    </div>
 
-  <div>
-    <%= f.label :password_confirmation, "Password confirmation" %>
-    <%= f.password_field :password_confirmation %>
-  </div>
+    <div>
+      <%= f.label :password_confirmation, "Password confirmation" %>
+      <%= f.password_field :password_confirmation %>
+    </div>
 
-  <div>
-    <%= f.label :password_challenge, "Current password" %>
-    <%= f.password_field :password_challenge %>
-  </div>
+    <div>
+      <%= f.label :password_challenge, "Current password" %>
+      <%= f.password_field :password_challenge %>
+    </div>
 
-  <%= f.submit "Update password" %>
-<% end %>
+    <%= f.submit "Update password" %>
+  <% end %>
+</div>
