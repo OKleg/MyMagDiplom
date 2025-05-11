@@ -29,8 +29,11 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 /vendor/bundle
+/vendor/*
 /public/assets
 coverage 
 /public/coverage
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+#
+/node_modules/*
