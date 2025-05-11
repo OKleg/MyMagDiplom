@@ -67,9 +67,13 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
   gem 'simplecov'
   gem "capybara"
   gem "selenium-webdriver"
+  gem 'cuprite'
+  gem 'webdrivers'
 end
 
 gem 'trix-rails', require: 'trix'

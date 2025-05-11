@@ -5,6 +5,9 @@
 # files.
 #
 require 'simplecov'
+# require 'rspec/rails'
+# require 'capybara/rspec'
+
 SimpleCov.start do
 
   add_filter %r{^/spec/} # Исключение кода самих тестов из оценки
@@ -14,8 +17,15 @@ SimpleCov.start do
 
   add_group 'Controllers', 'app/controllers'
   add_group 'Models', 'app/models'
+  add_group 'Services', 'app/services'
+
   add_group 'Helpers', 'app/helpers'
+
   add_group 'Mailers', 'app/mailers'
+  add_group 'Jobs', 'app/job'
+  add_group 'Channels', 'app/channels'
+  add_group 'JavaScript', 'app/javascript'
+
 end
 SimpleCov.coverage_dir 'public/coverage'
 

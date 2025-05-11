@@ -1,5 +1,8 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+# require 'webdrivers'
+# require 'rspec/rails'
+# require 'capybara/cuprite'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -7,9 +10,40 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
-require 'rspec/rails'
-# Add additional requires below this line. Rails is not loaded until this point!
+    require 'rspec/rails'
+    require 'capybara/rspec'
+    require 'webdrivers'
+    require 'capybara/cuprite'
+# Capybara.register_driver :selenium_chrome_headless do |app|
+#   options = Selenium::WebDriver::Chrome::Options.new
+#   options.add_argument('--headless')
+#   options.add_argument('--disable-gpu')
+#   options.add_argument('--no-sandbox')
+#   options.add_argument('--disable-dev-shm-usage')
 
+#   Capybara::Selenium::Driver.new(
+#     app,
+#     browser: :chrome,
+#     options: options
+#   )
+# end
+# Capybara.javascript_driver = :selenium_chrome_headless
+
+Capybara.register_driver(:cuprite) do |app|
+  Capybara::Cuprite::Driver.new(
+    app,
+    headless: true,
+    process_timeout: 30,
+    window_size: [1200, 800],
+    browser_options: { 'no-sandbox' => nil, 'disable-dev-shm-usage' => nil },
+    inspector: false # Отключаем инспектор для уменьшения блокировок
+
+  )
+end
+Capybara.javascript_driver = :cuprite
+
+# Capybara.server = :puma
+# Capybara.default_driver = :rack_test
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -37,7 +71,16 @@ RSpec.configure do |config|
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
   ]
-
+  config.global_fixtures = :all
+  # Настройка адаптера очереди для тестов
+  config.before(:each) do
+    ActiveJob::Base.queue_adapter = :test
+  end
+  config.before(:suite) do
+    # Отключаем кэширование ассетов
+    Rails.application.config.assets.cache = nil
+    Rails.application.assets.cache.clear
+  end
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -67,4 +110,12 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.render_views
+  config.include ActionCable::TestHelper
+
+end
+
+def sign_up_test_user(user)
+  puts `sign_up_test_user: #{}`
+  post "/registration/new", params: {  email: user.email, password: "password" }
 end

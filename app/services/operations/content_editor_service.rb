@@ -18,17 +18,17 @@ module Operations
         when 'insertText'
           Rails.logger.info "room: '#{@room.content}'."
 
-          # if @transformed_operation.position <= @room.content.length
+          unless @transformed_operation.position > @room.content.length
           # position =
           #   if @transformed_operation.position>0
           #     @transformed_operation.position-1
           #   else
           #     @transformed_operation.position
           #   end
-          @room.content.insert(@transformed_operation.position, @transformed_operation.text)
-          # else
-          #   @room.content.insert(@room.content.length-1, @transformed_operation.text)
-          # end
+            @room.content.insert(@transformed_operation.position, @transformed_operation.text)
+          else
+            @room.content.insert(@room.content.length-1, @transformed_operation.text)
+          end
 
         when 'delete'
           @room.content.slice!(@transformed_operation.position)

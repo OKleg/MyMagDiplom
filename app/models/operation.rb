@@ -20,9 +20,11 @@ class Operation < ApplicationRecord
       transformed_operation.version = self.room.version+1
       if transformed_operation.save!
         content_edit_service.call(self.room, transformed_operation)
-        ActionCable.server.broadcast("operation_channel_#{self.room.id}",{status: "update_text", operation: self})
+        # ActionCable.server.broadcast("operation_channel_#{self.room.id}",{status: "update_text", operation: self})
+        return true
       end
     end
+    return false
   end
 
   def operations_to_current_version

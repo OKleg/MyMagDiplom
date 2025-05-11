@@ -98,6 +98,13 @@ GEM
     concurrent-ruby (1.3.4)
     connection_pool (2.4.1)
     crass (1.0.6)
+    cuprite (0.15.1)
+      capybara (~> 3.0)
+      ferrum (~> 0.15.0)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -106,6 +113,16 @@ GEM
     docile (1.4.1)
     drb (2.2.1)
     erubi (1.13.0)
+    factory_bot (6.5.1)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
+    ferrum (0.15)
+      addressable (~> 2.5)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     ffi (1.17.1-x64-mingw-ucrt)
     ffi (1.17.1-x86_64-linux-gnu)
     globalid (1.2.1)
@@ -272,6 +289,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webdrivers (5.2.0)
+      nokogiri (~> 1.6)
+      rubyzip (>= 1.3.0)
+      selenium-webdriver (~> 4.0)
     webrick (1.8.2)
     websocket (1.2.11)
     websocket-driver (0.7.6)
@@ -289,7 +310,10 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   capybara
+  cuprite
+  database_cleaner-active_record
   debug
+  factory_bot_rails
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
@@ -306,6 +330,7 @@ DEPENDENCIES
   turbo-rails
   tzinfo-data
   web-console
+  webdrivers
 
 RUBY VERSION
    ruby 3.2.2p53

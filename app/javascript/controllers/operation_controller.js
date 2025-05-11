@@ -85,11 +85,6 @@ export default class extends Controller {
 
     if (operation.input_type == "insertText") {
       // Вставляем текст в указанную позицию
-      console.log(
-        `insertText in position: op(${operation.position}) - txt(${
-          currentContent[operation.position]
-        }`
-      );
       newContent = this.insertTextInContent(
         currentContent,
         operation.text,
@@ -106,8 +101,8 @@ export default class extends Controller {
       );
     }
     this.bodyTarget.editor.loadHTML(newContent); //loadText
-    console.log(`newContent |${newContent}|`);
-    console.log(`text|${this.bodyTarget.value}|`);
+    console.log(`newContent: ${newContent}`);
+    console.log(`html: ${this.bodyTarget.value}`);
   }
 
   onInput(event) {

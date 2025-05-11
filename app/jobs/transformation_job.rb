@@ -14,8 +14,9 @@ class TransformationJob < ApplicationJob
       position: operation["position"],
       version: operation["version"],
     )
-    new_operation.transform
-
+    if new_operation.transform
+      ActionCable.server.broadcast("operation_channel_#{data["room_id"]}",{status: "update_text", operation: new_operation})
+    end
     # Do something later
   end
 end
