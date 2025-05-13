@@ -80,13 +80,31 @@ export default class extends Controller {
     console.log(`UpdateText`);
     const document = this.bodyTarget.editor.getDocument();
     // Получаем текущее содержимое
-    let currentContent = document.toString();
-    let newContent = currentContent;
-
+    let currentContent = document.toString().slice(0, -1);
+    let newContent = currentContent.replace(/\n/g, "");
+    if (newContent.includes("\u00A0")) {
+      console.log(`AAAAAAAAAATass"`);
+    }
+    console.log(`editor.getDocument: "${document}"`);
+    console.log(`editor.getDocument.slice(0, -1): "${newContent}"`);
+    console.log(`html: "${this.bodyTarget.value}"`);
+    newContent = this.applyOperation(newContent, operation);
+    this.loadNewConent(newContent);
+    console.log(`newContent: "${newContent}"`);
+    console.log(`html: "${this.bodyTarget.value}"`);
+  }
+  loadNewConent(newContent) {
+    // this.bodyTarget.editor.loadHTML("");
+    // this.bodyTarget.editor.insertHTML(newContent);
+    this.bodyTarget.editor.loadHTML(`<p>${newContent}</p>`); //loadText
+    // this.bodyTarget.editor.deleteInDirection("backward");
+  }
+  applyOperation(content, operation) {
+    let newContent = content;
     if (operation.input_type == "insertText") {
       // Вставляем текст в указанную позицию
       newContent = this.insertTextInContent(
-        currentContent,
+        content,
         operation.text,
         operation.position
       );
@@ -95,16 +113,19 @@ export default class extends Controller {
       operation.input_type == "deleteContentForward" ||
       operation.input_type == "delete"
     ) {
-      newContent = this.deleteTextFromPosition(
-        currentContent,
-        operation.position
-      );
+      newContent = this.deleteTextFromPosition(content, operation.position);
     }
-    this.bodyTarget.editor.loadHTML(newContent); //loadText
-    console.log(`newContent: ${newContent}`);
-    console.log(`html: ${this.bodyTarget.value}`);
+    return newContent;
   }
-
+  // сleanNBSP() {
+  //   // const doc = this.bodyTarget.editor.getDocument();
+  //   // const doc = this.bodyTarget.value;
+  //   // const is_nbsp = doc.toString().endsWith("\u00A0");
+  //   // console.log(`check: |${doc.toString()}| - ${is_nbsp}`);
+  //   // if (is_nbsp) {
+  //   // this.bodyTarget.editor.deleteInDirection("backward");
+  //   // }
+  // }
   onInput(event) {
     var inputText = event.data;
     position = this.bodyTarget.editor.getPosition();
@@ -144,16 +165,14 @@ export default class extends Controller {
     }
   }
 
-  insertTextInContent(currentContent, text, position) {
+  insertTextInContent(content, text, position) {
     let newContent =
-      currentContent.slice(0, position) + text + currentContent.slice(position);
+      content.slice(0, position) + text + content.slice(position);
     return newContent;
   }
 
-  deleteTextFromPosition(currentContent, position) {
-    let newContent =
-      currentContent.slice(0, position) + currentContent.slice(position + 1);
-
+  deleteTextFromPosition(content, position) {
+    let newContent = content.slice(0, position) + content.slice(position + 1);
     return newContent;
   }
 }

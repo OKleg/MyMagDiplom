@@ -116,6 +116,5 @@ RSpec.configure do |config|
 end
 
 def sign_up_test_user(user)
-  puts `sign_up_test_user: #{}`
   post "/registration/new", params: {  email: user.email, password: "password" }
 end

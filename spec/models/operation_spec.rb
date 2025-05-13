@@ -44,6 +44,22 @@ describe Operation, type: :model do
         expect(room.content).to eq("cart")
       end
 
+      it "calls transform in insert operation after end pos" do
+        new_operation = described_class.new(
+          room: room,
+          user: users(:alex),
+          input_type: "insertText",
+          text: "e",
+          position: 4,
+          version: 2,
+        )
+        is_transformed = new_operation.transform
+        expect(is_transformed).to be true
+        expect(new_operation.position).to eq(5)
+        # expect(Operation.find_by(new_operation.id).position).to eq(3)
+        expect(room.content).to eq("cate")
+      end
+
       it "calls transform in delete operation after delete in equal position" do
 
         previos_operation = described_class.new(
