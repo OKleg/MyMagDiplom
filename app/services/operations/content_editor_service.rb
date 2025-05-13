@@ -27,7 +27,7 @@ module Operations
           #   end
             @room.content.insert(@transformed_operation.position, @transformed_operation.text)
           else
-            @room.content.insert(@room.content.length-1, @transformed_operation.text)
+            @room.content.insert(@room.content.length, @transformed_operation.text)
           end
 
         when 'delete'

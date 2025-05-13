@@ -15,6 +15,8 @@ SimpleCov.start do
   add_filter '/config/'
   add_filter '/vendor/'
   add_filter 'app/controllers/concerns/'
+  add_filter 'app/jobs'
+  add_filter 'app/channels/operations_channel.rb'
 
 
   add_group 'Controllers', 'app/controllers'

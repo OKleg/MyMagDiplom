@@ -1,5 +1,6 @@
 class OperationsChannel < ApplicationCable::Channel
   def subscribed
+    Rails.logger.info "__________________ "
     Rails.logger.info "OperationsChannel "
     Rails.logger.info "ApplicationCable::Channel "
     Rails.logger.info "User #{params[:user_id]} connected to room_#{params[:room_id]}"
@@ -8,14 +9,17 @@ class OperationsChannel < ApplicationCable::Channel
   end
 
   def receive(data)
+    Rails.logger.info "__________________ "
     Rails.logger.info "OperationsChannel "
     Rails.logger.info "ApplicationCable::Channel "
 
     # Принимаем изменения от клиента и транслируем их всем подписчикам
     Rails.logger.info "RESIVE data: #{data}"
     if data["status"] == "update_text"
+      Rails.logger.info "OperationsChannel recive update_text "
       TransformationJob.perform_later(data: data)
     elsif data["status"] == "connect_user"
+      Rails.logger.info "OperationsChannel recive connect_user "
       connect_user
     end
     # ActionCable.server.broadcast("operation_channel_#{params[:room_id]}", new_data)
