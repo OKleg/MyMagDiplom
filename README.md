@@ -1,4 +1,3 @@
-
 # Приложение с централизованной системой совместного редактирования в режиме реального времени
 ## Настройка
 
@@ -21,3 +20,14 @@
   ```
   rails spec
   ```
+# Вид
+## Главная страница
+![image](https://github.com/user-attachments/assets/60d5def4-3db5-495c-85a5-9ff92abfdfca)
+## Страница входа
+![image](https://github.com/user-attachments/assets/a9570520-aa5b-44a0-8647-8d52d8c0ee4b)
+## Приватная страница 
+![image](https://github.com/user-attachments/assets/d06007bd-3f6f-41a1-bc5e-f7dac0c5825f)
+## Страница со списком документов
+![image](https://github.com/user-attachments/assets/c880f614-7b7f-4771-a7a8-3eca8bc75242)
+## Пример работы 
+
