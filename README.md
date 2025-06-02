@@ -1,24 +1,23 @@
-# README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Приложение с централизованной системой совместного редактирования в режиме реального времени
+## Настройка
 
-Things you may want to cover:
+1. Установите Ruby https://rubyinstaller.org/
+2. Установите Visual Studio Code. Ссылка с гайдом: https://code.visualstudio.com/docs/languages/ruby
 
-* Ruby version
+3. Установите Node and NPM https://nodejs.org/en/download/
+4. Скопиируйте проект
 
-* System dependencies
+5. Насттройте проект: 
+  ```
+    bundle install
+    npm install
+    rails db:create
+    rails db:migrate
+  ```
+6. Запустите `rails s` в терминале чтобы запустить сервер
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Запуск тестов
+  ```
+  rails spec
+  ```
