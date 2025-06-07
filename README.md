@@ -31,3 +31,7 @@
 ![image](https://github.com/user-attachments/assets/c880f614-7b7f-4771-a7a8-3eca8bc75242)
 ## Пример работы 
 
+
+
+https://github.com/user-attachments/assets/8b57aaff-b6b9-4277-a564-40e24377e6e3
+
